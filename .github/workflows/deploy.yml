@@ -19,7 +19,7 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
-      # 3. Sincronizar archivos a Proyecto2
+      # 3. Sincronizar archivos a Proyecto2 demo
       - name: Sincronizar carpeta Proyecto2
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
