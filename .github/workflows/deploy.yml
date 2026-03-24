@@ -19,14 +19,14 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
-      # 3. Sincronizar archivos directamente usando Variables de Entorno
+      # 3. Sincronizar archivos corregido
       - name: Sincronizar carpeta Proyecto2
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          # El CLI buscará automáticamente las variables DATABRICKS_HOST y DATABRICKS_TOKEN
-          databricks workspace import-dir . /Workspace/Users/apps.compartidos@gmail.com/Proyecto2/ -o
+          # Cambiamos -o por --overwrite para que la nueva CLI lo reconozca
+          databricks workspace import-dir . /Workspace/Users/apps.compartidos@gmail.com/Proyecto2/ --overwrite
 
       # 4. Sincronizar archivos a la nueva carpeta (Proyecto2)
       - name: Sincronizar carpeta Proyecto2
