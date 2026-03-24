@@ -3,33 +3,43 @@ name: Despliegue a Databricks (Proyecto 2)
 on:
   push:
     branches:
-      - main # Se dispara cuando haces push a la rama principal
+      - main # Asegúrate de que tu rama se llame 'main'. Si es 'master', cámbialo aquí.
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Bajar el código del repo de GitHub
+      # 1. Obtener el código del repositorio
       - name: Checkout del código
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2. Instalar Databricks CLI
+      # 2. Instalar la versión más reciente del Databricks CLI
       - name: Instalar Databricks CLI
         run: |
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
-      # 3. Sincronizar archivos corregido demo"
+      # 3. Sincronizar archivos a Proyecto2
       - name: Sincronizar carpeta Proyecto2
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          # Cambiamos -o por --overwrite para que la nueva CLI lo reconozca
+          # Validación de seguridad: Verificar que los secrets existan
+          if [ -z "$DATABRICKS_HOST" ]; then
+            echo "❌ Error: El secret DATABRICKS_HOST está vacío o no se encuentra."
+            exit 1
+          fi
+          
+          if [ -z "$DATABRICKS_TOKEN" ]; then
+            echo "❌ Error: El secret DATABRICKS_TOKEN está vacío o no se encuentra."
+            exit 1
+          fi
+
+          echo "🚀 Iniciando despliegue en $DATABRICKS_HOST..."
+
+          # Ejecución del comando de importación
+          # Usamos --overwrite para reemplazar los archivos existentes en Proyecto2
           databricks workspace import-dir . /Workspace/Users/apps.compartidos@gmail.com/Proyecto2/ --overwrite
 
-      # 4. Sincronizar archivos a la nueva carpeta (Proyecto2)
-      - name: Sincronizar carpeta Proyecto2
-        run: |
-          # Importante: Esto sube todo tu repo local a la ruta especificada
-          databricks workspace import-dir . /Workspace/Users/apps.compartidos@gmail.com/Proyecto2/ -o
+          echo "✅ Despliegue completado con éxito en Proyecto2."
